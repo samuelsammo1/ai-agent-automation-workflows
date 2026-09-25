@@ -1,2 +1,12 @@
-# ai-agent-automation-workflows
-AI agent and n8n automation workflows for email intelligence, invoice follow-up, content automation, and business process automation.
+ai-agent-automation-workflows/
+│
+├── README.md
+│
+├── workflows/
+│   └── AI Email Classification.json
+│
+├── docs/
+│   ├── architecture.md
+│   └── security.md
+│
+└── .gitignore
