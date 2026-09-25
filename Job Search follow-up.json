@@ -1,0 +1,154 @@
+{
+  "name": "My workflow 5",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "feedUrl": "https://remoteok.com/remote-jobs.rss"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -112
+      ],
+      "id": "481efd9d-8e36-413b-8e25-17737d5e19b1",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3c1e822f-9edb-49cd-be8f-9e7cb24096c8",
+              "leftValue": "={{\n  ($json.title || \"\").toLowerCase().includes(\"data analyst\") ||\n  ($json.title || \"\").toLowerCase().includes(\"data engineer\") ||\n  ($json.title || \"\").toLowerCase().includes(\"ai engineer\") ||\n  ($json.title || \"\").toLowerCase().includes(\"machine learning\")\n}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        -112
+      ],
+      "id": "45f795c8-92be-464a-aab7-3111e21fb716",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Title: {{ $json.title }}\n\nDescription:\n{{ $json.contentSnippet }}\n\nLink:\n{{ $json.link }}\n\nSummarize this job and return:\n- Role\n- Key Skills\n- Experience Level\n- Remote/Hybrid/Onsite\n- 2-line Summary",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        368,
+        -112
+      ],
+      "id": "b7c9e927-5206-4475-82b3-cfd67f1fd15b",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-3.1-8b-instruct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        -112
+      ],
+      "id": "423b0a2a-f8bd-4529-8310-1c54c0ac0191",
+      "name": "OpenRouter Chat Model"
+    },
+    {
+      "parameters": {
+        "chatId": "7630382973",
+        "text": "Hello from my bot 🚀",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        704,
+        -112
+      ],
+      "id": "edc0cb21-7d2e-4806-8bcb-c234ee3a743b",
+      "name": "Send a text message",
+      "webhookId": "4a32ba24-998c-4f50-b49f-72bc10ed759c"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "953d1056-2dd8-4af8-a26f-51a46c13ae8e",
+  "meta": {
+    "instanceId": "9edf9f1c81e847fa8d0cb6917b07e3dd24081241440112397d72f5598cd48a80"
+  },
+  "nodeGroups": [],
+  "id": "kMCSlHdBnXtMsEfh",
+  "tags": []
+}
